@@ -1,5 +1,13 @@
-// Reexport the native module. On web, it will be resolved to ExpoCellSignalStrengthModule.web.ts
-// and on native platforms to ExpoCellSignalStrengthModule.ts
-export { default } from './ExpoCellSignalStrengthModule';
-export { default as ExpoCellSignalStrengthView } from './ExpoCellSignalStrengthView';
-export * from  './ExpoCellSignalStrength.types';
+import ExpoCellSignalStrengthModule from "./ExpoCellSignalStrengthModule";
+
+export function getSignalStrength() {
+    return ExpoCellSignalStrengthModule.signalStrength
+}
+
+export function listenToSignalStrength() {
+  return ExpoCellSignalStrengthModule.startListeningToSignalStrength();
+}
+
+export function stopListeningToSignalStrength() {
+  return ExpoCellSignalStrengthModule.stopListeningToSignalStrength();
+}
