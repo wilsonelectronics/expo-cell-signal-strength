@@ -1,28 +1,24 @@
-import * as ExpoCellSignalStrength from "expo-cell-signal-strength";
-import { Fragment, useState } from "react";
+import { CellSignalStrength } from "expo-cell-signal-strength";
+import { useEffect, useRef, useState } from "react";
 import { SafeAreaView, Text, TouchableHighlight, View } from "react-native";
 
 export default function App() {
   const [signalStrength, setSignalStrength] = useState<number | null>(null);
-  const [signalStrengthInterval, setSignalStrengthInterval] =
-    useState<NodeJS.Timeout | null>(null);
+  const SignalStrength = useRef<CellSignalStrength>(new CellSignalStrength());
 
   const startReadingSignalStrength = () => {
-    ExpoCellSignalStrength.listenToSignalStrength();
-    setSignalStrengthInterval(
-      setInterval(() => {
-        setSignalStrength(
-          (current) => ExpoCellSignalStrength.getSignalStrength() || current
-        );
-      }, 1000)
-    );
+    SignalStrength.current.monitorCellSignalStrength(setSignalStrength);
   };
 
   const stopReadingSignalStrength = () => {
-    ExpoCellSignalStrength.stopListeningToSignalStrength();
-    clearInterval(signalStrengthInterval!);
-    setSignalStrengthInterval(null);
+    SignalStrength.current.stopMonitoringCellSignalStrength();
   };
+
+  useEffect(() => {
+    return () => {
+      SignalStrength.current.stopMonitoringCellSignalStrength();
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

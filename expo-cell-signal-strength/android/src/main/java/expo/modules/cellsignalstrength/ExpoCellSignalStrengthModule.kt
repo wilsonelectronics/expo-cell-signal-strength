@@ -11,11 +11,7 @@ import java.util.concurrent.Executors
 class ExpoCellSignalStrengthModule : Module() {
 
   private var telephonyCallback: MyTelephonyCallback = MyTelephonyCallback()
-  var signalStrength: Int? = null
-
-  private fun setTelephonyCallback(callback: MyTelephonyCallback) {
-    telephonyCallback = callback
-  }
+  private var signalStrength: Int? = null
 
   private fun setSignalStrength(newSignalStrength: Int) {
     signalStrength = newSignalStrength
@@ -26,7 +22,6 @@ class ExpoCellSignalStrengthModule : Module() {
     Name("ExpoCellSignalStrength")
 
     Function("startListeningToSignalStrength") {
-          println("just before starting the telephony service")
           appContext.reactContext?.let {
             startTelephonyListener(it.applicationContext)
           }
@@ -55,6 +50,7 @@ class ExpoCellSignalStrengthModule : Module() {
     val telephonyManager = context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
     val executor = Executors.newSingleThreadExecutor()
     try {
+      telephonyManager.unregisterTelephonyCallback(telephonyCallback)
       telephonyManager.registerTelephonyCallback(executor, telephonyCallback)
     } catch (e: SecurityException) {
       println("Security exception: ${e.message}")
